@@ -1,0 +1,94 @@
+🧠 ¿Qué es el sandwich trading hoy?
+Sandwich attacks siguen siendo comunes en Ethereum y otras chains EVM, aunque la sofisticación ha aumentado:
+
+Se utilizan bundles a través de Flashbots y MEV-Boost.
+
+Muchos bots usan off-chain simulations para detectar oportunidades.
+
+Algunas chains han implementado mempools privadas o censura de front-runners para proteger a los usuarios.
+
+🛡️ Cómo prevenir sandwich attacks (desde el punto de vista del pentesting)
+1. Slippage controlado
+Bajada del tolerancia de slippage en dApps o directamente en la wallet del usuario.
+
+Pentesting: Asegurarse de que los parámetros de slippage no se autoajusten sin validación.
+
+2. Transacciones privadas (RPCs privados)
+Flashbots Protect, bloXroute o Eden Network permiten enviar txs directamente a validadores sin pasar por el mempool público.
+
+Pentesting: Verificar que la app puede funcionar correctamente en entornos con RPCs protegidos y no filtre información involuntaria al mempool público.
+
+3. Anti-MEV contract design
+Diseñar contratos donde no sea posible predecir beneficios para sandwichear, usando técnicas como:
+
+Commit-reveal (para órdenes que se revelan luego de enviadas)
+
+Randomización de gas usage
+
+Bloqueos de precios (TWAP oracles)
+
+Pentesting: Intentar simular órdenes en local para ver si se pueden predecir con exactitud.
+
+4. Flashbot Bundling desde el usuario
+Permitir al usuario enviar un bundle completo que incluya su orden + un trade protector (como un burn o delay), evitando la posibilidad de inserción de un front-runner.
+
+🔍 Buenas prácticas de pentesting DeFi modernas
+✅ 1. Simulaciones de MEV (Whitehat mode)
+Utilizar frameworks como:
+
+Tenderly
+
+Foundry/Anvil
+
+Echidna (para fuzzing de contratos)
+
+MEV-Inspect / MEV-Share para analizar históricos
+
+Simular un escenario de sandwich trade contra tus propios contratos para ver si hay huecos explotables.
+
+✅ 2. Auditorías dinámicas + comportamiento bajo presión
+Prueba de cómo se comporta un contrato bajo múltiples txs simultáneas, simulando un ataque de front-running.
+
+✅ 3. Análisis del mempool
+Estudiar patrones de bots actuales en el mempool con herramientas como:
+
+Blocknative
+
+Mempool Explorer
+
+Ethers.js con provider.getTransactionPool()
+
+🔐 Cómo defender a los usuarios (UX + tech)
+Interfaces que alerten si un token es sospechoso (ej. si el transfer está modificado como en tu ejemplo de Salmonella).
+
+Slippage automáticos más conservadores por defecto.
+
+Botones de “transacción privada” que usen Flashbots Protect.
+
+Tooltips explicando los riesgos de enviar txs sin protección.
+
+🧩 Ejercicio de pentesting moderno: ¿Tu smart contract puede ser usado como carnada?
+Tu viejo contrato Salmonella es un ejemplo de cómo los bots pueden caer en trampas si no hacen análisis profundo. Hoy, un pentester podría:
+
+Crear un honeypot contract con lógica personalizada.
+
+Usarlo en un pool Uniswap, con transfer que genera falsos logs (como hiciste).
+
+Lanzar txs con gas bajo y monitorear bots.
+
+Esto puede ayudarte a identificar bots activos, analizar su comportamiento y fortalecer tus defensas.
+
+🚫 Consideraciones éticas
+Hoy más que nunca, el uso de técnicas como "Salmonella" en un entorno real puede bordear lo ilegal en ciertos países si no se hace dentro de un entorno de prueba o con consentimiento. Siempre en el marco de pruebas white hat o bug bounty.
+
+🧰 Herramientas útiles hoy
+Flashbots Protect
+
+Echidna by Trail of Bits
+
+Tenderly
+
+Mempool.space
+
+Anvil (foundry)
+
